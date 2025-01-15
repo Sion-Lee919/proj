@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="dangun.SeachMapper">
+	<select id="seachlist" resultType="dangun.SeachDTO" parameterType="map">
+		select *
+		from(select rownum r, imsi.*
+		from(select * from items 
+		where title like '%' ||  #{keyword} || '%' order by id desc) imsi)
+		where r between #{start} and #{end}
+	</select>
+	
+	<select id="totalCount" resultType="int" parameterType="map">
+		select count(*) from items
+		where title like '%' ||  #{keyword} || '%'
+	</select>
+	
+	<select id="coun" resultType="dangun.CountryDTO" parameterType="String">
+		select * from country where country_name like '%' ||  #{keyword} || '%'
+	</select>
+</mapper>
+
+<!--  USER (id(pk), user_id, pw, name, country, email, phone)   // 별 평점은 인라인 서브쿼리로 대체
+- ITEM (id(pk), title, user_pk(ref), price, country, contents, category, img_src)
+- ITEM_SALE (item_id(ref), user_pk(ref), is_sale, star)
+- ITEM_LIKE (item_id(ref), like) // chat_count는 인라인 서브 쿼리로 대체
+- USER_ROLE (user_pk(pk), role)
+- CHAT_ROOM(id(pk), .... -->
+<!-- http://localhost:9091/seachlisttt?pagenum=1&keyword=%EC%84%B8%ED%8A%B8 -->
