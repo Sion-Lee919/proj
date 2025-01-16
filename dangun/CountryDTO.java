@@ -1,7 +1,7 @@
 package dangun;
 
 public class CountryDTO {
-	String country;
+	String country_name;
 	int id;
 
 	public int getId() {
@@ -12,18 +12,14 @@ public class CountryDTO {
 		this.id = id;
 	}
 
-	public String getCountry() {
-		return country;
+
+
+	public String getCountry_name() {
+		return country_name;
 	}
 
-	public void setCountry(String country) {
-		this.country = country;
-	}
-
-	public CountryDTO(String country, int id) {
-		super();
-		this.country = country;
-		this.id = id;
+	public void setCountry_name(String country_name) {
+		this.country_name = country_name;
 	}
 
 	public CountryDTO() {

@@ -7,7 +7,7 @@
 <meta charset="UTF-8">
 <title>Insert title here</title>
  <style>
-        .modal {
+        #myModal {
             display: none; 
             position: fixed;
             z-index: 1; 
@@ -49,67 +49,95 @@
             font-size: 1.2em;
             cursor: pointer; 
         }
+        
+        #searchResults {
+    	display: none;
+		}
  </style>
-<script src ="js/jquery-3.7.1.min.js"></script>
+ <script src ="js/jquery-3.7.1.min.js"></script>
 <script>
 $(document).ready(function(){
-    
-    // 모달 열기
-    document.getElementById('openModalBtn').addEventListener('click', function() {
-        document.getElementById('myModal').style.display = 'block';
-    });
+	$('#openModalBtn').on('click', function() {
+	        $('#myModal').css('display', 'block');
+	    });
+	 
+	$('#closeModalBtn').on('click', function() {
+	        $('#myModal').css('display', 'none');
+	    });
+	
+	$('.css-button').on('click', function() {
+	    var selectedCountry = $(this).text();
+	    var newUrl = '/seachlistt?country_name=' + encodeURIComponent(selectedCountry);
+	    window.history.pushState({}, '', newUrl); 
+		 $('#myModal').css('display', 'none');
 
-    // 모달 닫기
-    document.getElementById('closeModalBtn').addEventListener('click', function() {
-        document.getElementById('myModal').style.display = 'none';
-    });
+	});
+	
     
     $('#country_name').on('input', function() {
         var inputVal = $(this).val().trim();
-
+      
         if (inputVal === '') {
-            // 입력값이 없으면 추천 지역을 보이도록
+          
             $('#closesuggestion').show();
             $('#searchResults').hide();
         	} 
         else {
-            // 입력값이 있으면 추천 지역을 숨기도록
+        	
             $('#closesuggestion').hide();
-            $('#searchResults').show();
-         /*  $.ajax({
+            $('#searchResults').show();      		      
+              $.ajax({
                 url: '/seachlistt2',  // 서버에 요청을 보낼 URL
                 type: 'GET',
-                data: { 'country_name' : $("#country_name").val() },  // 입력한 지역을 파라미터로 보내기
+                data: { 'country_name' : inputVal },  // $("input[name=country_name]").val()입력한 지역을 파라미터로 보내기
                 dataType : 'json',
                 success: function(response) {
                 	$("#searchResults").html("");
+                	
     				for(let i=0; i <response.length; i++){
-    					$("#searchResults").append("<button type="button" class="css-button">" + response[i].country+"</button><br><hr style='border: none; height: 0.5px; background-color: gray;">");
-    					
-    				}
-    				$("#searchResults").css("border","2px solid lime");
-                }
-        } */
+    					$('.css-button').on('click', function() {
+                    	    var selectedCountry = $(this).text();
+                    	    var newUrl = '/seachlistt?country_name=' + encodeURIComponent(selectedCountry);
+                    	    window.history.pushState({}, '', newUrl); 
+                    	    $('#myModal').css('display', 'none');
+                    	});
+    					$("#searchResults").append("<button type='button' class='css-button'>" + response[i].country_name+"</button><br><hr style='border: none; height: 0.5px; background-color: gray;'>");
+    					}
+    				} 
+        		}); /* .ajax */
+        }/* else */	
+    });/*country_name*/
+    
+    $('#searchForm').on('keydown', function(event) {
+        if (event.key === 'Enter') {
+            event.preventDefault();
+        }
+    }); /* #searchForm Enter */
+
+    $('#searchF').on('submit', function(event) {
+        event.preventDefault(); 
+        var keyword = $('input[name="keyword"]').val().trim();
+        if (keyword) {
+            var currentUrl = window.location.href;
+            var separator = currentUrl.includes('?') ? '&' : '?';
+            var newUrl = currentUrl + separator + 'country_name=' + encodeURIComponent(keyword);
+            window.location.href = newUrl; 
         }
     });
     
-
-});
-
+    
+});/* ready */
 </script>
 </head>
 <body>
-  <!-- 페이지 내용 -->
     <button id="openModalBtn">지역 변경</button>
-
-    <!-- 모달 팝업 -->
     <div id="myModal" class="modal">
         <div class="modal-content">
             <span class="close" id="closeModalBtn">&times;</span>
             <h3>지역 변경</h3>
             <hr style="border: 1px solid gray;">
             
-            
+ 
             <form id="searchForm" action="" method="get">
    			<input type="text" name="country_name" id="country_name" placeholder="지역이나 동네로 검색하기">
     		<button type="button" id="searchBtn">검색</button><br>
@@ -137,12 +165,11 @@ $(document).ready(function(){
     		<hr style="border: none; height: 0.5px; background-color: gray;">
 			</div>
 			<div id="searchResults">
-			<h4>검색지역</h4>
 			</div>
         </div>
     </div>
 
-<form action="/seachlisttt" method="get">
+<form id="searchF" action="/seachlisttt" method="get">
     <input type="text" name="keyword" placeholder="검색어를 입력하세요">
     <button type="submit">검색</button>
 </form>

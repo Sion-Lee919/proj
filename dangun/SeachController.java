@@ -28,7 +28,7 @@ public class SeachController {
 	
 	@RequestMapping(value="/seachlistt2", produces = {"application/json;charset=utf-8"})
 	@ResponseBody
-	public List<CountryDTO> country(String country_name) {
+	public List<CountryDTO> country(@RequestParam(value ="country_name", required = false) String country_name) {
 		List<CountryDTO> countrylist = seachService.coun(country_name);
 		return countrylist;
 	}
